@@ -4,7 +4,7 @@ import glob
 
 
 # im Docker False, lokal auf True setzen
-SHOW_IMAGES = False  
+SHOW_IMAGES = True  
 
 # Definiere die Anzahl der inneren Ecken in der Schachbrettmuster
 chessboard_size = (6, 8)

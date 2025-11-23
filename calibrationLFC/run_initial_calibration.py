@@ -18,16 +18,16 @@ from Controller import Controller
 
 
 # -------------------------
-# Configuration (edit as needed)
+# Configuration
 # -------------------------
-BASE_DIR = "imageset"  # folder with images (relative to calibrationLFC/)
-NUM_POSES = 10
+BASE_DIR = "imageset"  # folder with images
+NUM_POSES = 1
 CAM_IDS = [
-    "center",
-    "up1", "up2", "up3",
-    "down1", "down2", "down3",
-    "left1", "left2", "left3",
-    "right1", "right2", "right3",
+    "Center",
+    "Up1", "Up2", "Up3",
+    "Down1", "Down2", "Down3",
+    "Left1", "Left2", "Left3",
+    "Right1", "Right2", "Right3",
 ]
 
 
@@ -43,9 +43,9 @@ def main():
         path = imageSet.getImagePath(0, cam)
         exists = os.path.exists(path)
         cornersFound = None
+
         try:
-            ok, corners, size = controller.initialCalibration.detectCorners(path)
-            cornersFound = ok
+            cornersFound, corners, size = controller.initialCalibration.detectCorners(path)
         except Exception as e:
             cornersFound = f"error: {e.__class__.__name__}"
         print(f" {cam}: {path} - exists={exists} - corners={cornersFound}")
