@@ -2,6 +2,12 @@ import bpy
 import json
 import mathutils
 
+B_TO_CV = mathutils.Matrix((
+    (1,  0,  0),
+    (0, -1,  0),
+    (0,  0, -1),
+))
+
 output = {}
 
 for obj in bpy.data.objects:
@@ -12,22 +18,25 @@ for obj in bpy.data.objects:
         # Welt-Transform holen
         world_matrix = obj.matrix_world.copy()
 
-        # Translation
-        T = world_matrix.to_translation()
-        T = [float(T.x), float(T.y), float(T.z)]
+        T_bl = world_matrix.to_translation()
+        R_bl = world_matrix.to_3x3()
 
-        # Rotation als Matrix
-        R = world_matrix.to_3x3()
-        R = [[float(R[i][j]) for j in range(3)] for i in range(3)]
+        # in OpenCV-Koordinatensystem umrechnen
+        T_cv = B_TO_CV @ T_bl         
+        R_cv = B_TO_CV @ R_bl          
+        
+        # In normale Python-Listen umwandeln
+        T_list = [float(T_cv.x), float(T_cv.y), float(T_cv.z)]
+        R_list = [[float(R_cv[i][j]) for j in range(3)] for i in range(3)]
 
         output[name] = {
-            "R": R,
-            "T": T
+            "rotationMatrix": R_list,
+            "translationVector": T_list
         }
 
 # JSON speichern
-save_path = bpy.path.abspath("//groundtruth_extrinsics.json")
+save_path = bpy.path.abspath("//groundtruth_extrinsics_misaligned.json")
 with open(save_path, 'w') as f:
-    json.dump(output, f, indent=4)
+    json.dump(output, f, indent=2)
 
 print("Export complete →", save_path)

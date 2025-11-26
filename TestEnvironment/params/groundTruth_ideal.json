@@ -11,23 +11,23 @@
       "focal_length_mm": 50,
       "sensor_width_mm": 36,
       "sensor_height_mm": 24,
-      "resolution_x_px": 1920,
-      "resolution_y_px": 1080
+      "resolution_x_px": 1280,
+      "resolution_y_px": 720
     },
     "calculated_intrinsics": {
-      "fx": 2666.67,
-      "fy": 2250.0,
-      "cx": 960,
-      "cy": 540
+      "fx": 1777.78,
+      "fy": 1500.0,
+      "cx": 640,
+      "cy": 360
     }
   },
 
   "intrinsics": {
-    "fx": 2666.67,
-    "fy": 2250.0,
-    "cx": 960,
-    "cy": 540,
-    "resolution": [1920, 1080],
+    "fx": 1777.78,
+    "fy": 1500.0,
+    "cx": 640,
+    "cy": 360,
+    "resolution": [1280, 720],
     "sensor": {
       "width_mm": 36.0,
       "height_mm": 24.0,
