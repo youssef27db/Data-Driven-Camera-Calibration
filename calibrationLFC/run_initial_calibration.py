@@ -21,7 +21,7 @@ from Controller import Controller
 # Configuration
 # -------------------------
 BASE_DIR = "imageset"  # folder with images
-NUM_POSES = 1
+NUM_POSES = 11
 CAM_IDS = [
     "Center",
     "Up1", "Up2", "Up3",
@@ -64,13 +64,53 @@ def main():
     except Exception:
         stateDict = None
 
-    if stateDict is not None:
-        intr = stateDict.get("intrinsics", {})
-        extr = stateDict.get("extrinsics", {})
-        print(f" - Intrinsics available for cameras: {list(intr.keys())}")
-        print(f" - Extrinsics available for cameras: {list(extr.keys())}")
-    else:
-        print("Could not extract a state dictionary. The returned object:", calibrationState)
+    if stateDict is None:
+        print("Could not extract a state dictionary.")
+        return
+
+    intr = stateDict.get("intrinsics", {})
+    extr = stateDict.get("extrinsics", {})
+
+    print("\n==============================")
+    print("   Calibration Summary")
+    print("==============================")
+
+    for cam in CAM_IDS:
+        print(f"\n--- {cam} ---")
+
+        # ===== Intrinsics =====
+        if cam in intr:
+            data = intr[cam]
+            K = data["cameraMatrix"]
+            dist = data["distortionCoeffs"].ravel()
+            err = data["reprojectionError"]
+
+            print("Intrinsics:")
+            print(" K =")
+            print(f"  {K[0][0]:.3f} {K[0][1]:.3f} {K[0][2]:.3f}")
+            print(f"  {K[1][0]:.3f} {K[1][1]:.3f} {K[1][2]:.3f}")
+            print(f"  {K[2][0]:.3f} {K[2][1]:.3f} {K[2][2]:.3f}")
+            print(" distCoeffs =", dist)
+            print(f" reprojectionError = {err:.6f}")
+        else:
+            print("Intrinsics: (no data)")
+
+        # ===== Extrinsics =====
+        if cam in extr:
+            data = extr[cam]
+            R = data["rotationMatrix"]
+            T = data["translationVector"].ravel()
+            rms = data["stereoRms"]
+
+            print("Extrinsics:")
+            print(" R =")
+            print(f"  {R[0][0]:.5f} {R[0][1]:.5f} {R[0][2]:.5f}")
+            print(f"  {R[1][0]:.5f} {R[1][1]:.5f} {R[1][2]:.5f}")
+            print(f"  {R[2][0]:.5f} {R[2][1]:.5f} {R[2][2]:.5f}")
+            print(" T =", T)
+            print(f" stereoRMS = {rms:.6f}")
+        else:
+            print("Extrinsics: (no data)")
 
 
 
