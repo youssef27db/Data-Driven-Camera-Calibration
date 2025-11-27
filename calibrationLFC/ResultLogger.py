@@ -72,7 +72,8 @@ class ResultLogger:
 
         # File name with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        json_name = f"calibration_initial_{timestamp}.json"
+        imagesetnumber = meta.get("imageDir", "unknown").split("imageset")[-1]
+        json_name = f"calibration_initial_imageset{imagesetnumber}_{timestamp}.json"
         json_path = os.path.join(self.baseDir, json_name)
 
         # Wrap everything into one JSON object
