@@ -19,7 +19,7 @@ GROUNDTRUTH_PATH = os.path.join(
 
 # Pfad zum Kalibrierungsergebnis
 CALIB_RESULT_PATH = os.path.join(
-    CALIB_LFC_DIR, "results", "calibration_initial_20251126_094228.json"
+    CALIB_LFC_DIR, "results", "calibration_initial_20251127_144449.json"
 )
 
 
