@@ -8,16 +8,18 @@ class Controller:
         self.scoreHistory = []
         self.currentState = None
         self.resultLogger = ResultLogger()
+        self.bundleAdjust = True
 
     def runInitialCalibration(self, imageSet):
         print("Controller: starting initial calibration...")
-        calibrationState = self.initialCalibration.run(imageSet)
+        calibrationState = self.initialCalibration.run(imageSet, self.bundleAdjust)
 
         meta = {
             "runType": "initial",
             "numPoses": imageSet.numPoses,
             "imageDir": imageSet.baseDir,
             "cameraIds": imageSet.cameraIds,
+            "bundleAdjust": self.bundleAdjust,
         }
         self.resultLogger.logInitialCalibration(calibrationState, meta=meta)
 

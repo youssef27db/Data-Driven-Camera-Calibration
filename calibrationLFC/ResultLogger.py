@@ -50,12 +50,6 @@ class ResultLogger:
         """
         Store the full calibration state as JSON and write a short summary to the log.
 
-        meta: optional dict with extra info, e.g. {
-            "runType": "initial",
-            "numPoses": 11,
-            "imageDir": "imageset",
-            "cameraIds": [...]
-        }
         """
         if meta is None:
             meta = {}
@@ -96,10 +90,11 @@ class ResultLogger:
         num_cams_intr = len(intr)
         num_cams_extr = len(extr)
         run_type = meta.get("runType", "initial")
+        bundle_adjust = meta.get("bundleAdjust", True)
 
         self.logger.info(
             f"Stored {run_type} calibration to '{json_name}' "
-            f"(intrinsics for {num_cams_intr} cams, extrinsics for {num_cams_extr} cams)."
+            f"(intrinsics for {num_cams_intr} cams, extrinsics for {num_cams_extr} cams, bundleAdjustf: {bundle_adjust})."
         )
     
 

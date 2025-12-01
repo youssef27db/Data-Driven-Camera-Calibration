@@ -21,7 +21,7 @@ from Controller import Controller
 # Configuration
 # -------------------------
 BASE_DIR = "imageset2"  # folder with images
-NUM_POSES = 23
+NUM_POSES = 33
 CAM_IDS = [
     "Center",
     "Up1", "Up2", "Up3",
@@ -37,6 +37,7 @@ def main():
 
     print("Instantiating Controller and InitialCalibration...")
     controller = Controller()
+    logger = controller.resultLogger
 
     print("\nQuick checks (pose 0): file exists / corners detected")
     for cam in CAM_IDS:
@@ -54,8 +55,8 @@ def main():
     try:
         calibrationState = controller.runInitialCalibration(imageSet)
     except Exception as e:
-        print("Calibration failed with exception:", e)
-        # re-raise so CI or interactive runs show the traceback
+        logger.logger.error(f"Calibration failed with exception: {e}", exc_info=True)
+        print("Calibration failed, see calibration.log for details.")
         raise
 
     print("\nCalibration finished. Attempting to print summary...")
