@@ -1,0 +1,49 @@
+@startuml
+title Zustandsdiagramm: Datengetriebene Kalibrierung eines LFC-Systems
+
+[*] --> Uncalibrated
+
+state "Initial Lab Calibration" as InitCalib {
+  [*] --> CapturingTargets
+  CapturingTargets : Checkerboard-Aufnahmen sammeln
+  CapturingTargets --> EstimatingParameters : Posen vorhanden
+
+  EstimatingParameters : Intrinsics/Extrinsics schätzen\n(OpenCV, StereoCalib, BA)
+  EstimatingParameters --> BaselineReady : Parameter stabil \n(ReprojectionError < 0.1)
+
+  BaselineReady : Referenzkalibrierung gespeichert
+}
+
+Uncalibrated --> InitCalib : runInitialCalibration()
+InitCalib --> Operational : Kalibrierungszustand gespeichert
+
+state Operational {
+  [*] --> HealthCheck
+
+  HealthCheck : HealthScore wird\nperiodisch oder event-basiert geprüft
+
+  ' Health-Check OK
+  HealthCheck --> HealthCheck : selfHealthCheck()\n[HealthScore > 70]
+
+  ' Wiederholt schlechte Werte -> Rekalibrierung anstoßen
+  HealthCheck --> Recalibration : recalibration()\n[HealthScore <= 70]
+
+  state Recalibration {
+    [*] --> UpdatingParams
+    UpdatingParams : Recalibration (LiFCal)
+    UpdatingParams --> EvaluateUpdate
+    EvaluateUpdate : HealthScore_neu mit HealthMonitor\nneu berechnen
+  }
+
+  ' Update ist besser -> übernehmen
+  Recalibration --> HealthCheck : commitUpdate()\n[HealthScore_neu > HealthScore_alt]
+
+  ' Update ist nicht besser -> verwerfen
+  Recalibration --> Rollback : rollbackBaseline()\n[HealthScore_neu <= HealthScore_alt]
+
+  Rollback : Vorherige Kalibrierung\nwiederhergestellt
+  Rollback --> HealthCheck : restoreBaseline()
+}
+
+Operational --> [*]
+@enduml
